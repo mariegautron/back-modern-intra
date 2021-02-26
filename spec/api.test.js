@@ -34,22 +34,34 @@ const getId = (link) => {
 
 class EventConverter {
 
-  constructor(payload) {
-    this.startDate = convertDate(payload.start.date_time),
-    this.endDate = convertDate(payload.end.date_time),
+  constructor(payload, account) {
+    this.startDate = convertDate(payload.start.date_time)
+    this.endDate = convertDate(payload.end.date_time)
     this.eid = getId(payload.html_link)
-
+    this.account = account
   }
-
+  client(){
+    // la personne ds l'évènement
+    let users = this.account.getClientUsers()
+    return users.filter( user => user.email)
+  }
 }
 
 describe('test start fonction', () => {
 
     let eventConverter;
+    let client1, client2, account;
   
     beforeEach(async () => {
-      eventConverter = new EventConverter(payload)
-
+      client1 = { email: "a@mail.com" }
+      client2 = { email: "b@mail.com" }
+      account = {
+        getClientUsers: () => {
+          //user qui sont client 
+          return [client1, client2]
+        }
+      }
+      eventConverter = new EventConverter(payload, account)
     })
 
     test('it should return type Date for start date', async () => {
