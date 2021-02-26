@@ -1,10 +1,10 @@
-const factoryGirl = require('factory-girl')
-const adapter = new factoryGirl.SequelizeAdapter()
-factory = factoryGirl.factory
-factory.setAdapter(adapter)
+const factoryGirl = require("factory-girl");
+const adapter = new factoryGirl.SequelizeAdapter();
+factory = factoryGirl.factory;
+factory.setAdapter(adapter);
 
-const Account = require('../../models').Account
+const Account = require("../../models").Account;
 
-factory.define('account', Account, {
-  // firstName: factory.sequence((n) => `firstName${n}`),
-})
+factory.define("account", Account, {
+  name: factory.sequence((n) => `name${n}`),
+});

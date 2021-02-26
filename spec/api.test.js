@@ -1,7 +1,11 @@
 const request = require('supertest')
 const app = require('../app')
 const cleanDb = require('./helpers/cleanDb')
+require('./factories/user').factory
 const factory = require('factory-girl').factory
+const db = require('../models');
+
+
 
 const payload = {
   attendees: [{
@@ -40,10 +44,10 @@ class EventConverter {
     this.eid = getId(payload.html_link)
     this.account = account
   }
-  client(){
+  async client(){
     // la personne ds l'évènement
-    let users = this.account.getClientUsers()
-    return users.filter( user => user.email)
+    // let users = this.account.getClientUsers()
+    user = await factory.createMany('user', 2)
   }
 }
 
@@ -62,6 +66,9 @@ describe('test start fonction', () => {
         }
       }
       eventConverter = new EventConverter(payload, account)
+      user = await factory.createMany('user', 2)
+
+      console.log(user);
     })
 
     test('it should return type Date for start date', async () => {
