@@ -1,6 +1,8 @@
 const request = require('supertest')
 const app = require('../app')
+const db = require('../models');
 const cleanDb = require('./helpers/cleanDb')
+require('./factories/account').factory
 const factory = require('factory-girl').factory
 
 const payload = {
@@ -32,6 +34,8 @@ const getId = (link) => {
   return link.split('=')[1]
 }
 
+
+factory.build('account').then((res) => console.log('build', res))
 class EventConverter {
 
   constructor(payload, account) {
@@ -43,6 +47,7 @@ class EventConverter {
   client(){
     // la personne ds l'évènement
     let users = this.account.getClientUsers()
+    
     return users.filter( user => user.email)
   }
 }

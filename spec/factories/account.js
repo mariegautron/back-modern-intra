@@ -6,5 +6,5 @@ factory.setAdapter(adapter)
 const Account = require('../../models').Account
 
 factory.define('account', Account, {
-  // firstName: factory.sequence((n) => `firstName${n}`),
+   name: factory.sequence((n) => `name${n}`),
 })
