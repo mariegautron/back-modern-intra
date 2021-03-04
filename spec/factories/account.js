@@ -6,5 +6,6 @@ factory.setAdapter(adapter);
 const Account = require("../../models").Account;
 
 factory.define("account", Account, {
+  id: 1,
   name: factory.sequence((n) => `name${n}`),
 });
