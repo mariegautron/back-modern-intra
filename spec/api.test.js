@@ -5,7 +5,6 @@ const cleanDb = require('./helpers/cleanDb')
 require('./factories/account').factory
 require('./factories/user').factory
 const factory = require('factory-girl').factory
-const db = require('../models');
 
 
 
@@ -40,6 +39,7 @@ const getId = (link) => {
 
 
 factory.build('account').then((res) => console.log('build', res))
+
 class EventConverter {
 
   constructor(payload, account) {

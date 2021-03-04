@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+
     }
   };
   Account.init({
@@ -19,5 +19,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Account',
   });
+
+  Account.associate = (models) => {
+    Account.belongsTo(models.Company)
+  }
+  
   return Account;
 };
