@@ -3,7 +3,11 @@ const app = require('../app')
 const db = require('../models');
 const cleanDb = require('./helpers/cleanDb')
 require('./factories/account').factory
+require('./factories/user').factory
 const factory = require('factory-girl').factory
+const db = require('../models');
+
+
 
 const payload = {
   attendees: [{
@@ -44,11 +48,13 @@ class EventConverter {
     this.eid = getId(payload.html_link)
     this.account = account
   }
-  client(){
+  async client(){
     // la personne ds l'évènement
-    let users = this.account.getClientUsers()
+        // let users = this.account.getClientUsers()
+        user = await factory.createMany('user', 2)
     
     return users.filter( user => user.email)
+
   }
 }
 
@@ -67,6 +73,9 @@ describe('test start fonction', () => {
         }
       }
       eventConverter = new EventConverter(payload, account)
+      user = await factory.createMany('user', 2)
+
+      console.log(user);
     })
 
     test('it should return type Date for start date', async () => {
