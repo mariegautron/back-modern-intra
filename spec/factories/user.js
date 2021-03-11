@@ -11,8 +11,8 @@ factory.define('user', User, {
     email: factory.sequence((n) => `email${n}`),
     userType: factory.sequence((n) => `userType${n}`),
     company: factory.sequence((n) => `company${n}`),
-    admin: factory.sequence((n) => `admin${n}`),
-    clientDashboard: factory.sequence((n) => `clientDashboard${n}`),
-    employeeDashboard: factory.sequence((n) => `employeeDashboard${n}`),
+    admin: factory.sequence(() => false),
+    clientDashboard: factory.sequence(() => false),
+    employeeDashboard: factory.sequence(() => false),
     hourlyRate: factory.sequence((n) => `hourlyRate${n}`),
 })

@@ -20,5 +20,17 @@ app.get('/users', async (req, res) => {
   })
 })
 
+app.post('/user', async (req, res) => {
+  await db.User.create({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    userType: req.body.userType,
+    company: req.body.company,
+    admin: req.body.admin,
+    clientDashboard: req.body.clientDashboard,
+    employeeDashboard: req.body.employeeDashboard,
+    hourlyRate: req.body.hourlyRate  }).then((result) => {return res.json(result)})
+})
 
 module.exports = app
