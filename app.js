@@ -14,13 +14,20 @@ app.get('/', async (req, res) => {
   res.status(200).send('Hello World!')
 })
 
-app.get('/users', async (req, res) => {
+app.get('/api/users', async (req, res) => {
   await db.User.findAll().then((result) => {
-    return res.json(result)
+    let response = []
+    result.forEach(el => {
+      response.push({attributes : el, type: 'users'})
+    });
+    
+    return res.json({
+      data: response
+    })
   })
 })
 
-app.post('/user', async (req, res) => {
+app.post('/api/user', async (req, res) => {
   await db.User.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
