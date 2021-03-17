@@ -10,9 +10,6 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(express.static('app/public'))
 
-app.get('/', async (req, res) => {
-  res.status(200).send('Hello World!')
-})
 
 app.get('/api/users', async (req, res) => {
   await db.User.findAll().then((result) => {
