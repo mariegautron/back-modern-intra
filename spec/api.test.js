@@ -13,6 +13,7 @@ compareUsers = (firstUser, secondUser) => {
   expect(firstUser.firstName).toBe(secondUser.firstName);
   expect(firstUser.lastName).toBe(secondUser.lastName);
   expect(firstUser.email).toBe(secondUser.email);
+  expect(firstUser.password).toBe(secondUser.password);
   expect(firstUser.userType).toBe(secondUser.userType);
   expect(firstUser.company).toBe(secondUser.company);
   expect(firstUser.admin).toBe(secondUser.admin);
@@ -137,6 +138,7 @@ describe('/GET users', () => {
       data.firstName = 'John'
       data.lastName = 'Wick'
       data.email = 'john@wick.com'
+      data.password = '1233'
       data.userType = 'userTypeJohn'
       data.company = company.name
       data.admin = false
