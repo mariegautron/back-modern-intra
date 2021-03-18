@@ -110,13 +110,14 @@ fakeBody = {
 };
 
 app.post("/api/front_tokens", async (req, res) => {
-  if (!req.body.email || !req.body.password) {
+  const body = req.body.data.attributes
+  if (!body.email || !body.password) {
     return res.status(400).json({
       error: new Error("Failed. Check request."),
     });
   }
 
-  db.User.findOne({ where: { email: req.body.email } })
+  db.User.findOne({ where: { email: body.email } })
     .then((user) => {
       if (!user) {
         return res.status(403).json({
@@ -126,7 +127,7 @@ app.post("/api/front_tokens", async (req, res) => {
 
       try {
         const valid =
-          req.body.password === user.password && req.body.email === user.email;
+          body.password === user.password && body.email === user.email;
         if (!valid) {
           return res.status(403).json({
             error: new Error("Incorrect password!"),
