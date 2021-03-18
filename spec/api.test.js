@@ -2,6 +2,7 @@ const { response } = require('express');
 const request = require('supertest')
 const app = require('../app')
 const db = require('../models');
+const user = require('../models/user');
 const cleanDb = require('./helpers/cleanDb')
 require('./factories/company').factory
 require('./factories/user').factory
@@ -19,6 +20,39 @@ compareUsers = (firstUser, secondUser) => {
   expect(firstUser.hourlyRate).toBe(secondUser.hourlyRate);
 
 }
+
+
+describe('/POST front_tokens', () => {
+
+  let response;
+  let user;
+
+  beforeEach(async() => {
+    await cleanDb(db)
+    user = await factory.create('user')
+  })
+
+  test('It should return a code 200 and token for the user', async () => {
+    response = await request(app).post('/api/front_tokens').send({email: user.email, password: user.password})
+    expect(response.statusCode).toBe(200)
+    console.log(response.body.data)
+    expect(response.body.data['authState'].token).toBe(response.body.data.authState.token)
+    expect(response.body.data['authState'].expiresIn).toBe(response.body.data.authState.expiresIn)
+    expect(response.body.data['authState']).toBe(response.body.data.authState)
+  });
+
+  test('It should return a code 403 if is not the good credetials', async() => {
+    response = await request(app).post('/api/front_tokens').send({email: 'fake@email.com', password: 'fakePwd'})
+    expect(response.statusCode).toBe(403)
+  })
+
+  test('It should return a code 400 if credentials are empty', async() => {
+    response = await request(app).post('/api/front_tokens').send({email: '', password: ''})
+    expect(response.statusCode).toBe(400)
+  })
+  
+
+})
 
 describe('/GET companies', () => {
 
