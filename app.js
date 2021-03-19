@@ -1,19 +1,23 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const db = require("./models");
 const jwt = require("jsonwebtoken");
-
+const checkTokenMiddleware = require("./spec/helpers/authMiddleware");
 const app = express();
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(express.json({ type: "application/vnd.api+json" }));
+app.use(express.urlencoded());
 app.use(express.static("app/public"));
 
-app.get("/api/users", async (req, res) => {
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Authorization, Content-Type, Accept"
+  );
+  next();
+});
+
+app.get("/api/users", checkTokenMiddleware, async (req, res) => {
   await db.User.findAll().then((result) => {
     let response = [];
     result.forEach((el) => {
@@ -26,7 +30,7 @@ app.get("/api/users", async (req, res) => {
   });
 });
 
-app.get("/api/companies", async (req, res) => {
+app.get("/api/companies", checkTokenMiddleware, async (req, res) => {
   await db.Company.findAll()
     .then((result) => {
       let response = [];
@@ -99,18 +103,8 @@ app.post("/api/users", async (req, res) => {
   }
 });
 
-fakeBody = {
-  data: {
-    attributes: {
-      email: "john@mail.com",
-      password: "password",
-    },
-    type: "tokens",
-  },
-};
-
 app.post("/api/front_tokens", async (req, res) => {
-  const body = req.body.data.attributes
+  const body = req.body.data.attributes;
   if (!body.email || !body.password) {
     return res.status(400).json({
       error: new Error("Failed. Check request."),
@@ -133,18 +127,29 @@ app.post("/api/front_tokens", async (req, res) => {
             error: new Error("Incorrect password!"),
           });
         }
-        const EXPIRES_IN = "24h";
-        const token = jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", {
-          expiresIn: EXPIRES_IN,
-        });
-        let data = {
-          'authState': {
-            token: token,
-            expiresIn: EXPIRES_IN,
+        const EXPIRES_IN = 3600;
+        const token = jwt.sign(
+          {
+            id: user.id,
           },
-        }
+          "accessTokenSecret",
+          { expiresIn: EXPIRES_IN }
+        );
+
+        res.setHeader("Authorization", token);
         res.status(200).json({
-          data
+          data: {
+            token: token,
+            type: "tokens",
+            id: "1",
+            attributes: {
+              authState: {
+                expiresIn: 123456789, //Time ms
+                token: token, //Token
+                authState: {}, //User info...
+              },
+            },
+          },
         });
       } catch (error) {
         res.status(500).json({
@@ -158,4 +163,5 @@ app.post("/api/front_tokens", async (req, res) => {
       });
     });
 });
+
 module.exports = app;
